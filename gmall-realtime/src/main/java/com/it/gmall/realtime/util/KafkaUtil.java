@@ -25,7 +25,7 @@ public class KafkaUtil {
     static String DEFAULT_TOPIC = "default_topic";
 
     /**
-     * 从kafka读取数据，与env.addSource相关联
+     * 从kafka读取数据流，与env.addSource相关联
      *
      * @param topic   kafka主题
      * @param groupId kafka消费者组Id
@@ -61,9 +61,9 @@ public class KafkaUtil {
 
 
     /**
-     * 将数据写入kafka，与stream.addSink相关联
+     * 将流数据写入kafka，与stream.addSink相关联
      *
-     * @param page_topic 要写入kafka的主题名
+     * @param topic 要写入kafka的主题名
      * @return SinkFunction<String>对象
      */
     public static FlinkKafkaProducer<String> getFlinkKafkaProducer(String topic) {
@@ -86,4 +86,74 @@ public class KafkaUtil {
                     }
                 }, properties, FlinkKafkaProducer.Semantic.EXACTLY_ONCE);
     }
+
+
+    /**
+     * topic_db主题的  Kafka-Source DDL 语句，从kafka的topic_db中读取数据并创建表topic_db
+     *
+     * @param groupId 消费者组
+     * @return 拼接好的 Kafka 数据源 DDL 语句
+     */
+    public static String getTopicDb(String groupId) {
+        return "CREATE TABLE topic_db ( " +
+                "  `database` STRING, " +
+                "  `table` STRING, " +
+                "  `type` STRING, " +
+                "  `data` MAP<STRING,STRING>, " +
+                "  `old` MAP<STRING,STRING>, " +
+                "  `pt` AS PROCTIME() " +
+                ") " + getKafkaDDL("topic_db", groupId);
+    }
+
+
+    /**
+     * Kafka-Source DDL 语句
+     *
+     * @param topic   数据源主题
+     * @param groupId 消费者组
+     * @return 拼接好的 Kafka 数据源 DDL 语句
+     */
+    public static String getKafkaDDL(String topic, String groupId) {
+        return " with ('connector' = 'kafka', " +
+                " 'topic' = '" + topic + "'," +
+                " 'properties.bootstrap.servers' = '" + BOOTSTRAP_SERVERS + "', " +
+                " 'properties.group.id' = '" + groupId + "', " +
+                " 'format' = 'json', " +
+                " 'scan.startup.mode' = 'group-offsets')";
+    }
+
+    /**
+     * Kafka-Sink DDL 语句，将数据表的数据存入kafka的主题中
+     *
+     * @param topic 输出到 Kafka 的目标主题
+     * @return 拼接好的 Kafka-Sink DDL 语句
+     */
+    public static String getKafkaSinkDDL(String topic) {
+        return " WITH ( " +
+                "  'connector' = 'kafka', " +
+                "  'topic' = '" + topic + "', " +
+                "  'properties.bootstrap.servers' = '" + BOOTSTRAP_SERVERS + "', " +
+                "  'format' = 'json' " +
+                ")";
+    }
+
+    /**
+     * UpsertKafka-Sink DDL 语句
+     *
+     * @param topic 输出到 Kafka 的目标主题，撤回流
+     * @return 拼接好的 UpsertKafka-Sink DDL 语句
+     */
+    public static String getUpsertKafkaDDL(String topic) {
+        return " WITH ( " +
+                "  'connector' = 'upsert-kafka', " +
+                "  'topic' = '" + topic + "', " +
+                "  'properties.bootstrap.servers' = '" + BOOTSTRAP_SERVERS + "', " +
+                "  'key.format' = 'json', " +
+                "  'value.format' = 'json' " +
+                ")";
+    }
+
+
+
+
 }

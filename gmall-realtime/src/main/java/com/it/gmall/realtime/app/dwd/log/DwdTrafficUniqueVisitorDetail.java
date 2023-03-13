@@ -20,7 +20,7 @@ import org.apache.flink.util.Collector;
 /**
  * @author ZuYingFang
  * @time 2023-03-10 18:10
- * @description 过滤页面数据中的独立访客访问记录，即将用户首日访问的记录输出到特定topic的kafka流中，当日其他的访问记录丢弃掉
+ * @description 流量域独立访客事务事实表。过滤页面数据中的独立访客访问记录，即将用户首日访问的记录输出到特定topic的kafka流中，当日其他的访问记录丢弃掉
  * 数据流：web/app -> Nginx -> 日志服务器(.log) -> Flume -> Kafka(ODS) -> FlinkApp -> Kafka(DWD) -> FlinkApp -> Kafka(DWD)
  * 程  序：Mock(lg.sh) -> Flume(f1) -> Kafka(ZK) -> BaseLogApp -> Kafka(ZK) -> DwdTrafficUniqueVisitorDetail -> Kafka(ZK)
  */

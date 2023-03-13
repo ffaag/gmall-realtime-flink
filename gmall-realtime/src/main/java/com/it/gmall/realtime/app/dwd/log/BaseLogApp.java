@@ -21,7 +21,7 @@ import org.apache.flink.util.OutputTag;
 /**
  * @author ZuYingFang
  * @time 2023-03-09 15:57
- * @description 读取log日志流，过滤脏数据并做新老用户校验，之后将页面日志放到主流，启动、曝光、动作、错误放到侧输出流，并将其写入kafka的不同topic中
+ * @description 流量域未经加工的事务事实表。读取log日志流，过滤脏数据并做新老用户校验，之后将页面日志放到主流，启动、曝光、动作、错误放到侧输出流，并将其写入kafka的不同topic中
  *  数据流：web/app -> Nginx -> 日志服务器(.log) -> Flume -> Kafka(ODS) -> FlinkApp -> Kafka(DWD)
  *  程  序：                    Mock(lg.sh) -> Flume(f1) -> Kafka(ZK) -> BaseLogApp -> Kafka(ZK)
  */
