@@ -140,7 +140,7 @@ public class KafkaUtil {
     /**
      * UpsertKafka-Sink DDL 语句
      *
-     * @param topic 输出到 Kafka 的目标主题，撤回流
+     * @param topic 输出到 Kafka 的目标主题，撤回流，也就是比如左连接，先输入左边数据，此时得到的数据右边为空，再输入右边数据，此时会撤回第一步连接得到的数据，也就是输出一个null，再输出左右连接的数据
      * @return 拼接好的 UpsertKafka-Sink DDL 语句
      */
     public static String getUpsertKafkaDDL(String topic) {

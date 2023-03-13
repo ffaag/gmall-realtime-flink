@@ -6,6 +6,8 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 
+import java.time.Duration;
+
 /**
  * @author ZuYingFang
  * @time 2023-03-12 18:17
@@ -33,7 +35,8 @@ public class DwdTradeOrderPreProcess {
 //        env.getCheckpointConfig().setCheckpointStorage("hdfs://hadoop102:8020/checkpoint");
 //        System.setProperty("HADOOP_USER_NAME", "xiaofang");
 
-        //1.3 设置状态的TTL  生产环境设置为最大乱序程度
+        //1.3 设置状态的TTL  生产环境设置为最大乱序程度，也就是Join时，保存数据5s的存活时间而不需要一直实时去mysql查询，默认存储永久
+        tableEnv.getConfig().setIdleStateRetention(Duration.ofSeconds(5));
 
 
         //TODO 2.创建 topic_db 表
@@ -254,12 +257,8 @@ public class DwdTradeOrderPreProcess {
         tableEnv.executeSql("insert into dwd_order_pre select * from result_table");
 
 
-
         //TODO 11.启动任务
         env.execute("DwdTradeOrderPreProcess");
-
-
-
 
     }
 
