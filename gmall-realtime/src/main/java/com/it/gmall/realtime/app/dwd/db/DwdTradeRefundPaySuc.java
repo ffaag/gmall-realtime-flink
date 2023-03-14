@@ -10,7 +10,7 @@ import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 /**
  * @author ZuYingFang
  * @time 2023-03-13 16:26
- * @description 交易域退款成功事务事实表
+ * @description 交易域退款成功事务事实表。从退款表中提取退款成功数据，并将字典表的 dic_name 维度退化到表中，从订单表中提取退款成功订单数据，从退单表中提取退款成功的明细数据
  * 数据流：Web/app -> nginx -> 业务服务器(Mysql) -> Maxwell -> Kafka(ODS) -> FlinkApp -> Kafka(DWD)
  * 程  序：Mock  ->  Mysql  ->  Maxwell -> Kafka(ZK)  ->  DwdTradeRefundPaySuc -> Kafka(ZK)
  */

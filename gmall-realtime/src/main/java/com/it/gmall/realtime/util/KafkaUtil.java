@@ -93,6 +93,7 @@ public class KafkaUtil {
      *
      * @param groupId 消费者组
      * @return 拼接好的 Kafka 数据源 DDL 语句
+     * 具体格式见文档第九章交易域加购事务事实表
      */
     public static String getTopicDb(String groupId) {
         return "CREATE TABLE topic_db ( " +
@@ -112,6 +113,7 @@ public class KafkaUtil {
      * @param topic   数据源主题
      * @param groupId 消费者组
      * @return 拼接好的 Kafka 数据源 DDL 语句
+     * 具体格式见文档第九章交易域加购事务事实表
      */
     public static String getKafkaDDL(String topic, String groupId) {
         return " with ('connector' = 'kafka', " +
@@ -127,6 +129,7 @@ public class KafkaUtil {
      *
      * @param topic 输出到 Kafka 的目标主题
      * @return 拼接好的 Kafka-Sink DDL 语句
+     * 具体格式见文档第九章交易域加购事务事实表
      */
     public static String getKafkaSinkDDL(String topic) {
         return " WITH ( " +
@@ -140,8 +143,20 @@ public class KafkaUtil {
     /**
      * UpsertKafka-Sink DDL 语句
      *
-     * @param topic 输出到 Kafka 的目标主题，撤回流，也就是比如左连接，先输入左边数据，此时得到的数据右边为空，再输入右边数据，此时会撤回第一步连接得到的数据，也就是输出一个null，再输出左右连接的数据
+     * @param topic 输出到 Kafka 的目标主题，撤回流，也就是比如左连接，先输入左边数据，此时得到的数据右边为空，
+     *              再输入右边数据，此时会撤回第一步连接得到的数据，也就是输出一个null，再输出左右连接的数据
      * @return 拼接好的 UpsertKafka-Sink DDL 语句
+     * 具体格式见文档第九章交易域订单预处理表
+     *
+     * left join 实现过程：假设 A 表作为主表与 B 表做等值左外联。当 A 表数据进入算子，而 B 表数据未至时会先生成一条 B 表字段
+     * 均为 null 的关联数据ab1，其标记为 +I。其后，B 表数据到来，会先将之前的数据撤回，即生成一条与 ab1 内容相同，但标记为 -D 的
+     * 数据，再生成一条关联后的数据，标记为 +I。这样生成的动态表对应的流称之为回撤流。
+     * Kafka SQL Connector 分为Kafka SQL Connector 和 Upsert Kafka SQL Connector：
+     * Upsert Kafka Connector支持以 upsert 方式从 Kafka topic 中读写数据
+     *
+     *
+     * 本节需要用到 Kafka 连接器的明细表数据来源于 topic_db 主题，于 Kafka 而言，该主题的数据的操作类型均为 INSERT，
+     * 所以读取数据使用 Kafka Connector 即可。而由于 left join 的存在，流中存在修改数据，所以写出数据使用 Upsert Kafka Connector。
      */
     public static String getUpsertKafkaDDL(String topic) {
         return " WITH ( " +

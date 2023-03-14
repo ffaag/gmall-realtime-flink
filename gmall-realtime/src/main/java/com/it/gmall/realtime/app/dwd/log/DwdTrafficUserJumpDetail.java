@@ -26,9 +26,10 @@ import java.util.Map;
 /**
  * @author ZuYingFang
  * @time 2023-03-10 19:29
- * @description 流量域用户跳出事务事实表。//数据流：web/app -> Nginx -> 日志服务器(.log) -> Flume -> Kafka(ODS) -> FlinkApp -> Kafka(DWD) -> FlinkApp -> Kafka(DWD)
- * 程  序：     Mock(lg.sh) -> Flume(f1) -> Kafka(ZK) -> BaseLogApp -> Kafka(ZK) -> DwdTrafficUserJumpDetail -> Kafka(ZK)
- * 过滤用户跳出明细数据，即只访问一次的，使用flink CEP实现，要么连续两个lastPage为空的，要么一个为空后面超时的，将其得到后联合流，写入kafka中
+ * @description 流量域用户跳出事务事实表。
+ * 数据流：web/app -> Nginx -> 日志服务器(.log) -> Flume -> Kafka(ODS) -> FlinkApp -> Kafka(DWD) -> FlinkApp -> Kafka(DWD)
+ * 程  序：Mock(lg.sh) -> Flume(f1) -> Kafka(ZK) -> BaseLogApp -> Kafka(ZK) -> DwdTrafficUserJumpDetail -> Kafka(ZK)
+ * 过滤用户跳出明细数据，即只访问一个页面的，使用flink CEP实现，要么连续两个lastPage为空的，要么一个为空后面超时的，将其得到后联合流，写入kafka中
  */
 public class DwdTrafficUserJumpDetail {
 
@@ -115,8 +116,8 @@ public class DwdTrafficUserJumpDetail {
         DataStream<String> unionDS = selectDS.union(timeOutDS);
 
         //TODO 9.将数据写出到Kafka
-        selectDS.print("Select>>>>>>>");
-        timeOutDS.print("TimeOut>>>>>");
+//        selectDS.print("Select>>>>>>>");
+//        timeOutDS.print("TimeOut>>>>>");
         String targetTopic = "dwd_traffic_user_jump_detail";
         unionDS.addSink(KafkaUtil.getFlinkKafkaProducer(targetTopic));
 

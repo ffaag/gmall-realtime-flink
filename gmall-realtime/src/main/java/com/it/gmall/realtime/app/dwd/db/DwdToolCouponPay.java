@@ -8,7 +8,7 @@ import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 /**
  * @author ZuYingFang
  * @time 2023-03-13 16:30
- * @description 工具域优惠券使用（支付）事务事实表
+ * @description 工具域优惠券使用（支付）事务事实表。读取优惠券领用表数据，筛选优惠券支付数据，写入 Kafka 优惠券支付主题
  * 数据流：Web/app -> nginx -> 业务服务器(Mysql) -> Maxwell -> Kafka(ODS) -> FlinkApp -> Kafka(DWD)
  * 程  序：Mock  ->  Mysql  ->  Maxwell -> Kafka(ZK)  ->  DwdToolCouponPay -> Kafka(ZK)
  */

@@ -10,7 +10,7 @@ import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 /**
  * @author ZuYingFang
  * @time 2023-03-13 16:33
- * @description 互动域评价事务事实表
+ * @description 互动域评价事务事实表。建立 MySQL-Lookup 字典表，读取评论表数据，关联字典表以获取评价（好评、中评、差评、自动），将结果写入 Kafka 评价主题
  * 数据流：Web/app -> nginx -> 业务服务器(Mysql) -> Maxwell -> Kafka(ODS) -> FlinkApp -> Kafka(DWD)
  * 程  序：Mock  ->  Mysql  ->  Maxwell -> Kafka(ZK)  ->  DwdInteractionComment -> Kafka(ZK)
  */

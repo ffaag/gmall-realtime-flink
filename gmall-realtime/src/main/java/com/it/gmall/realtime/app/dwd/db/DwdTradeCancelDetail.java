@@ -8,7 +8,7 @@ import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 /**
  * @author ZuYingFang
  * @time 2023-03-13 16:20
- * @description 交易域取消订单事务事实表
+ * @description 交易域取消订单事务事实表，从 Kafka 读取订单预处理表数据，筛选取消订单明细数据，写入 Kafka 对应主题。
  * 数据流：Web/app -> nginx -> 业务服务器(Mysql) -> Maxwell -> Kafka(ODS) -> FlinkApp -> Kafka(DWD) -> FlinkApp -> Kafka(DWD)
  * 程  序：Mock  ->  Mysql  ->  Maxwell -> Kafka(ZK)  ->  DwdTradeOrderPreProcess -> Kafka(ZK) -> DwdTradeCancelDetail -> Kafka(ZK)
  */
@@ -137,7 +137,7 @@ public class DwdTradeCancelDetail {
                 //"row_op_ts timestamp_ltz(3) " +
                 ")" + KafkaUtil.getKafkaSinkDDL("dwd_trade_cancel_detail"));
 
-        //TODO 5.将数据写出到Kafka
+        //TODO 5.将数据写出到Kafka。注意，print方法和executeSql方法里面已经加入了execute，所以不需要再写了
         tableEnv.executeSql("insert into dwd_trade_cancel_detail select * from filtered_table");
 
 

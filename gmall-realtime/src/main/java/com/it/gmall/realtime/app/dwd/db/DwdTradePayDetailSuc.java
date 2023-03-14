@@ -11,7 +11,7 @@ import java.time.Duration;
 /**
  * @author ZuYingFang
  * @time 2023-03-13 16:22
- * @description 交易域支付成功事务事实表
+ * @description 交易域支付成功事务事实表.从 Kafka topic_db主题筛选支付成功数据、从dwd_trade_order_detail主题中读取订单事实数据、MySQL-LookUp字典表，关联三张表形成支付成功宽表，写入 Kafka 支付成功主题。
  * 数据流：Web/app -> nginx -> 业务服务器(Mysql) -> Maxwell -> Kafka(ODS) -> FlinkApp -> Kafka(DWD) -> FlinkApp -> Kafka(DWD) -> FlinkApp -> Kafka(DWD)
  * 程  序：Mock  ->  Mysql  ->  Maxwell -> Kafka(ZK)  ->  DwdTradeOrderPreProcess -> Kafka(ZK) -> DwdTradeOrderDetail -> Kafka(ZK) -> DwdTradePayDetailSuc -> Kafka(ZK)
  */

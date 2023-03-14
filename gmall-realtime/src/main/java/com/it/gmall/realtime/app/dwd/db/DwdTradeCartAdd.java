@@ -74,6 +74,12 @@ public class DwdTradeCartAdd {
 
 
         //TODO 5.关联两张表
+        /**
+         * Lookup Join 通常在 Flink SQL 表和外部系统查询结果关联时使用。这种关联要求一张表（主表）有处理时间字段，
+         * 而另一张表（维表）由 Lookup 连接器生成。
+         * 	Lookup Join 做的是维度关联，而维度数据是有时效性的，那么我们就需要一个时间字段来对数据的版本进行标识。
+         * 	因此，Flink 要求我们提供处理时间用作版本字段。此处选择在topic_db表中调用 PROCTIME() 函数获取系统时间，将其作为处理时间字段。
+         */
         Table cartAddWithDicTable = tableEnv.sqlQuery("" +
                 "select " +
                 "    ci.id, " +

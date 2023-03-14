@@ -10,7 +10,7 @@ import java.time.ZoneId;
 /**
  * @author ZuYingFang
  * @time 2023-03-13 16:34
- * @description 用户域用户注册事务事实表
+ * @description 用户域用户注册事务事实表。读取用户表数据，获取注册时间，将用户注册信息写入 Kafka 用户注册主题
  * 数据流：Web/app -> nginx -> 业务服务器(Mysql) -> Maxwell -> Kafka(ODS) -> FlinkApp -> Kafka(DWD)
  * 程  序：Mock  ->  Mysql  ->  Maxwell -> Kafka(ZK)  ->  DwdUserRegister -> Kafka(ZK)
  */
