@@ -1,6 +1,8 @@
 package com.it.gmall.realtime.bean;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author ZuYingFang
@@ -9,6 +11,8 @@ import lombok.Data;
  */
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class TableProcess {
 
     //来源表
